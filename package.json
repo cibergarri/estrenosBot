@@ -1,11 +1,15 @@
 {
   "name": "estrenos_bot",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "El bot para recibir los estrenos actuales",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Javier Garrido",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "node-telegram-bot-api": "^0.24.0"
+  }
 }
