@@ -13,6 +13,8 @@ bot.on('text', function (msg) {
   obj.results.forEach(function(item,index){
     resul +=item.title + "\n";
   })
+
+  
   var chatId = msg.chat.id;
   bot.sendMessage(chatId,resul);
 });
