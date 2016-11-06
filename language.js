@@ -5,7 +5,7 @@ var languages=[
     },
     {
         code:"en-US",
-        description:"English(USA)"
+        description:"English"
     }
 ];
 

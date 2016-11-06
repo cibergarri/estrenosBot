@@ -79,6 +79,14 @@ bot.onText(/^\/previous/,function(msg){
   bot.sendMessage(chatId,"cines");
 });*/
 
+bot.onText(/^\/movie(.+)/, function (msg,match) {
+   var chatId = msg.chat.id;
+   var movieId = match[1];
+   var ses=session.getSession(chatId);
+   var resul= api.getMovieInfo(language.getLanguageCode(ses.lang),movieId);
+   bot.sendMessage(chatId,resul);
+});
+
 bot.on('text',function(msg){
 
 });
