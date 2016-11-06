@@ -1,7 +1,7 @@
 {
     "pageOf": "Page {0} of {1}",
-    "forPrevious":"for previous...",
-    "forNext":"for next...",
+    "forPrevious":"previous page",
+    "forNext":"next page",
     "currentLanguage":"Current language: ",
     "setLanguage": "Set your preferred language: ",
     "title":"Title",
