@@ -4,7 +4,6 @@ var releasesUrl="https://api.themoviedb.org/3/movie/now_playing";
 var movieUrl="https://api.themoviedb.org/3/movie/";//284052?api_key=44a2cd8bedba52acd348d4456277bd51&language=en-US""
 var configUrl="https://api.themoviedb.org/3/configuration?api_key=";//44a2cd8bedba52acd348d4456277bd51"
 var translate=require("./translate.js");
-var format = require('string-format')
 
 exports.getReleases= function getReleases(lang,page)
 {
@@ -13,6 +12,8 @@ exports.getReleases= function getReleases(lang,page)
   var json_string=httpGet(url, false);  
   var obj = JSON.parse( json_string );
   //console.log(obj);
+  return obj;
+  /*
   var resul=format(translate.get(lang,'pageOf'),page,obj.total_pages) + "\n";
   obj.results.forEach(function(item,index){
     resul +=item.title + " (" + item.vote_average + ") '/movie" + item.id + "'\n";
@@ -22,6 +23,7 @@ exports.getReleases= function getReleases(lang,page)
   if(page<obj.total_pages)
     resul+="/next " +  translate.get(lang,'forNext');
   return resul;
+  */
 }
 exports.getMovieInfo=function getMovieInfo(lang,id)
 {
