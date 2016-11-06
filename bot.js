@@ -106,6 +106,7 @@ bot.onText(/^\/title (.+)/, function (msg,match) {
       i+=1;
    }
    var ses=session.getSession(chatId);
+   ses.searchPage=1;
    var langCode=language.getLanguageCode(ses.lang);
    var resul= api.getMovieSearch(langCode,query);
    var response="";
