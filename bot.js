@@ -2,6 +2,7 @@ var TelegramBot = require('node-telegram-bot-api');
 var session=require("./session.js");
 var api=require("./api.js");
 var language=require("./language.js");
+var translate=require("./translate.js");
 
 var botToken = '290157752:AAHg_tY6doG9LsvsULyyMzDkqVFxiN5VIPw';
 // Setup polling way
@@ -10,8 +11,9 @@ var bot = new TelegramBot(botToken, {polling: true});
 bot.onText(/^\/settings/, function (msg) {
   var chatId = msg.chat.id;
   var ses=session.getSession(chatId);
-  var message= "lenguaje actual: " + language.getLanguageDescription(ses.lang);
-  message+='\nset your language';
+  var langCode=language.getLanguageCode(ses.lang);
+  var message= translate.get(langCode ,'currentLanguage') + language.getLanguageDescription(ses.lang);
+  message+='\n' + translate.get(langCode ,'setLanguage');
   var options=[];
   language.getLanguages().forEach(function(item,index){
     options.push(
@@ -42,7 +44,8 @@ bot.on('callback_query',function (callbackQuery) {
      chat_id: callbackQuery.message.chat.id,
      message_id: callbackQuery.message.message_id
    };
-   var message= "lenguaje actual: " + language.getLanguageDescription(ses.lang);
+   var langCode=language.getLanguageCode(ses.lang);
+   var message= translate.get(langCode ,'currentLanguage') + language.getLanguageDescription(ses.lang);
    bot.editMessageText(message, options);
 });
  
@@ -71,10 +74,10 @@ bot.onText(/^\/previous/,function(msg){
   bot.sendMessage(chatId,resul);
 });
 
-bot.onText(/^\/cines/,function(msg){
+/*bot.onText(/^\/cines/,function(msg){
   var chatId = msg.chat.id;
   bot.sendMessage(chatId,"cines");
-});
+});*/
 
 bot.on('text',function(msg){
 

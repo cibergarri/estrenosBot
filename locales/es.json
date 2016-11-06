@@ -1,5 +1,7 @@
 {
     "pageOf": "Página {0} de {1}",
     "forPrevious":"para anteriores...",
-    "forNext":"para siguientes..."
+    "forNext":"para siguientes...",
+    "currentLanguage":"Idioma actual ",
+    "setLanguage":"Elije tu idioma "
 }
