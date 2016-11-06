@@ -3,5 +3,12 @@
     "forPrevious":"para anteriores...",
     "forNext":"para siguientes...",
     "currentLanguage":"Idioma actual ",
-    "setLanguage":"Elije tu idioma "
+    "setLanguage":"Elije tu idioma ",
+    "title":"Título",
+    "tagline":"Subtítulo",
+    "originalTitle":"Título original",
+    "genres":"genero(s)",
+    "overview":"Resumen",
+    "companies":"Productora/s",
+    "releaseDate":"Fecha de estreno"
 }

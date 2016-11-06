@@ -8,7 +8,8 @@ exports.getSession= function getSession(chatId)
         sessionsInfo[index]=
         {
             lang:0,
-            releasesPage:1
+            releasesPage:1,
+            searchPage:1
         }
     }
     return sessionsInfo[index];

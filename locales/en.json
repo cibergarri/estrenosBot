@@ -3,5 +3,12 @@
     "forPrevious":"for previous...",
     "forNext":"for next...",
     "currentLanguage":"Current language: ",
-    "setLanguage": "Set your preferred language: "
+    "setLanguage": "Set your preferred language: ",
+    "title":"Title",
+    "tagline":"Tagline",
+    "originalTitle":"Original title",
+    "genres":"Genre(s)",
+    "overview":"Overview",
+    "companies":"Company(ies)",
+    "releaseDate":"Release date"
 }

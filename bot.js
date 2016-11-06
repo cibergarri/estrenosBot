@@ -35,8 +35,6 @@ bot.onText(/^\/settings/, function (msg) {
   console.log(msg);
 });*/
 bot.on('callback_query',function (callbackQuery) {
-  //console.log("callback Query");
-  //console.log(callbackQuery);
   var chatId = callbackQuery.message.chat.id;
   var ses=session.getSession(chatId);
   var callbackData=callbackQuery.data.split('_');
@@ -65,8 +63,21 @@ bot.on('callback_query',function (callbackQuery) {
         break;
       }
       var resul= api.getReleases(language.getLanguageCode(ses.lang),ses.releasesPage);
-      //bot.sendMessage(chatId,);
-      var pag=getPagination(resul,langCode);
+      var pag=getPagination(resul,langCode,"movies");
+      bot.sendMessage(chatId,getMovies(resul) + pag.message,pag.opts);
+    break;
+    case "search":
+      switch(callbackData[2])
+      {
+        case "previous":
+          if(ses.searchPage>1) ses.searchPage-=1;
+        break;
+        case "next":
+          ses.searchPage+=1;
+        break;
+      }
+      var resul= api.getMovieSearch(language.getLanguageCode(ses.lang),callbackData[1],ses.searchPage);
+      var pag=getPagination(resul,langCode,"search");
       bot.sendMessage(chatId,getMovies(resul) + pag.message,pag.opts);
     break;
   }  
@@ -79,38 +90,56 @@ bot.onText(/^\/start/, function (msg) {
   var langCode=language.getLanguageCode(ses.lang);
   var resul= api.getReleases(langCode,ses.releasesPage);
   //bot.sendMessage(chatId,getMovies(resul));
-  var pag=getPagination(resul,langCode);
+  var pag=getPagination(resul,langCode,"movies");
   bot.sendMessage(chatId,getMovies(resul) + pag.message,pag.opts);
 }); 
 
-/*bot.onText(/^\/next/,function(msg){
-  var chatId = msg.chat.id;
-  var ses=session.getSession(chatId);
-  ses.releasesPage+=1;
-  var resul= api.getReleases(language.getLanguageCode(ses.lang),ses.releasesPage);
-  bot.sendMessage(chatId,resul);
+
+bot.onText(/^\/title (.+)/, function (msg,match) {
+   var chatId = msg.chat.id;
+   var query="";
+   i=1;
+   while(match[i]!=undefined)
+   {  
+      if(query!="") query+="+";
+      query+=match[i]
+      i+=1;
+   }
+   var ses=session.getSession(chatId);
+   var langCode=language.getLanguageCode(ses.lang);
+   var resul= api.getMovieSearch(langCode,query);
+   var response="";
+   resul.results.forEach(function(item,index){
+     response+=item.title + " /movie" + item.id + "\n";
+   });
+   var pag=getPagination(resul,langCode,"search_"+query);
+   bot.sendMessage(chatId,response + pag.message,pag.opts);
 });
-
-bot.onText(/^\/previous/,function(msg){
-  var chatId = msg.chat.id;
-  var ses=session.getSession(chatId);
-  if(ses.releasesPage>1)
-    ses.releasesPage-=1;
-  var resul= api.getReleases(language.getLanguageCode(ses.lang),ses.releasesPage);
-  bot.sendMessage(chatId,resul);
-});*/
-
-/*bot.onText(/^\/cines/,function(msg){
-  var chatId = msg.chat.id;
-  bot.sendMessage(chatId,"cines");
-});*/
 
 bot.onText(/^\/movie(.+)/, function (msg,match) {
    var chatId = msg.chat.id;
    var movieId = match[1];
    var ses=session.getSession(chatId);
    var resul= api.getMovieInfo(language.getLanguageCode(ses.lang),movieId);
-   bot.sendMessage(chatId,resul);
+   
+   var info="";
+   if(resul.image!=undefined)info +=resul.image;
+   var lang=language.getLanguageCode(ses.lang);
+   info+="\n"+ translate.get(lang,'title') + ": " + resul.movieInfo.title;
+   info+="\n"+ translate.get(lang,'tagline') + ": " + resul.movieInfo.tagline;
+   info+="\n"+ translate.get(lang,'originalTitle') + ": " + resul.movieInfo.original_title;
+   info+="\n"+ translate.get(lang,'genres') + ": ";
+   resul.movieInfo.genres.forEach(function(item,index){
+      info+=item.name + " ";
+   });  
+   info+="\n"+ translate.get(lang,'overview') + ": " + resul.movieInfo.overview;
+   info+="\n"+ translate.get(lang,'companies') + ": ";
+   resul.movieInfo.production_companies.forEach(function(item,index){
+      info+=item.name + " ";
+   });
+   info+="\n"+ translate.get(lang,'releaseDate') + ": " + resul.movieInfo.release_date;
+  
+   bot.sendMessage(chatId,info);
 });
 
 bot.on('text',function(msg){
@@ -121,12 +150,12 @@ bot.on('text',function(msg){
 function getMovies(obj){
   var movies="";//format(translate.get(lang,'pageOf'),page,obj.total_pages) + "\n";
   obj.results.forEach(function(item,index){
-    movies +=item.title + " (" + item.vote_average + ") '/movie" + item.id + "'\n";
+    movies +=item.title + " (" + item.vote_average + ") /movie" + item.id + "\n";
   });
   return movies;
 }
 
-function getPagination(obj,lang)
+function getPagination(obj,lang,callback_code)
 {
   var message=format(translate.get(lang,'pageOf'),obj.page,obj.total_pages) + "\n";
   var opts;
@@ -138,7 +167,7 @@ function getPagination(obj,lang)
       options.push(
       {
         "text":translate.get(lang,'forPrevious'),
-        "callback_data": "movies_previous"
+        "callback_data": callback_code + "_previous"
       });
     }
     if(obj.page<obj.total_pages)
@@ -146,7 +175,7 @@ function getPagination(obj,lang)
       options.push(
       {
         "text":translate.get(lang,'forNext'),
-        "callback_data": "movies_next"
+        "callback_data": callback_code + "_next"
       });
     }
     var markup= JSON.stringify({
