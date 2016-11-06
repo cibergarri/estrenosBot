@@ -9,7 +9,23 @@ var botToken = '290157752:AAHg_tY6doG9LsvsULyyMzDkqVFxiN5VIPw';
 // Setup polling way
 var bot = new TelegramBot(botToken, {polling: true});
 
-bot.onText(/^\/settings/, function (msg) {
+var regExp={
+  "start":/^\/start/,
+  "settings":/^\/settings/,
+  "title":/^\/title (.+)/,
+  "movie":/^\/movie(.+)/,
+  "help":/^\/help/
+}
+
+var callback_ids={
+  "language":"language",
+  "movies":"movies",
+  "search":"search",
+  "previous":"previous",
+  "next":"next"
+}
+
+bot.onText(regExp.settings, function (msg) {
   var chatId = msg.chat.id;
   var ses=session.getSession(chatId);
   var langCode=language.getLanguageCode(ses.lang);
@@ -20,7 +36,7 @@ bot.onText(/^\/settings/, function (msg) {
     options.push(
       {
         "text":item.description,
-        "callback_data": "language_" + index
+        "callback_data": callback_ids.language + "_" + index
       }
       );
   }); 
@@ -31,72 +47,19 @@ bot.onText(/^\/settings/, function (msg) {
   var opts = {reply_to_message_id: msg.message_id, reply_markup: markup};
   bot.sendMessage(chatId, message, opts);  
 });
-/*bot.on('chosen_inline_result',function (msg) {
-  console.log(msg);
-});*/
-bot.on('callback_query',function (callbackQuery) {
-  var chatId = callbackQuery.message.chat.id;
-  var ses=session.getSession(chatId);
-  var callbackData=callbackQuery.data.split('_');
-  var options = {
-        chat_id: callbackQuery.message.chat.id,
-        message_id: callbackQuery.message.message_id
-      };
-  var message;
-  var langCode=language.getLanguageCode(ses.lang);
-  switch(callbackData[0])
-  {
-    case "language":
-      ses.lang=Number(callbackData[1]);
-      langCode=language.getLanguageCode(ses.lang);
-      message= translate.get(langCode ,'currentLanguage') + language.getLanguageDescription(ses.lang);
-      bot.editMessageText(message, options);
-    break;
-    case "movies":
-      switch(callbackData[1])
-      {
-        case "previous":
-          if(ses.releasesPage>1) ses.releasesPage-=1;
-        break;
-        case "next":
-          ses.releasesPage+=1;
-        break;
-      }
-      var resul= api.getReleases(language.getLanguageCode(ses.lang),ses.releasesPage);
-      var pag=getPagination(resul,langCode,"movies");
-      bot.sendMessage(chatId,getMovies(resul) + pag.message,pag.opts);
-    break;
-    case "search":
-      switch(callbackData[2])
-      {
-        case "previous":
-          if(ses.searchPage>1) ses.searchPage-=1;
-        break;
-        case "next":
-          ses.searchPage+=1;
-        break;
-      }
-      var query=callbackData[1];
-      var resul= api.getMovieSearch(language.getLanguageCode(ses.lang),query,ses.searchPage);
-      var pag=getPagination(resul,langCode,"search_" + query);
-      bot.sendMessage(chatId,getMovies(resul) + pag.message,pag.opts);
-    break;
-  }  
-});
  
-bot.onText(/^\/start/, function (msg) {
+bot.onText(regExp.start, function (msg) {
   var chatId = msg.chat.id;
-  var ses=session.getSession(chatId);
+  var ses = session.getSession(chatId);
   ses.releasesPage=1;
-  var langCode=language.getLanguageCode(ses.lang);
-  var resul= api.getReleases(langCode,ses.releasesPage);
-  //bot.sendMessage(chatId,getMovies(resul));
-  var pag=getPagination(resul,langCode,"movies");
+  var langCode = language.getLanguageCode(ses.lang);
+  var resul = api.getReleases(langCode,ses.releasesPage);
+  var pag = getPagination(resul,langCode,callback_ids.movies);
   bot.sendMessage(chatId,getMovies(resul) + pag.message,pag.opts);
 }); 
 
 
-bot.onText(/^\/title (.+)/, function (msg,match) {
+bot.onText(regExp.title, function (msg,match) {
    var chatId = msg.chat.id;
    var query="";
    i=1;
@@ -114,11 +77,11 @@ bot.onText(/^\/title (.+)/, function (msg,match) {
    resul.results.forEach(function(item,index){
      response+=item.title + " /movie" + item.id + "\n";
    });
-   var pag=getPagination(resul,langCode,"search_"+query);
+   var pag=getPagination(resul,langCode, callback_ids.search + "_" + query);
    bot.sendMessage(chatId,response + pag.message,pag.opts);
 });
 
-bot.onText(/^\/movie(.+)/, function (msg,match) {
+bot.onText(regExp.movie, function (msg,match) {
    var chatId = msg.chat.id;
    var movieId = match[1];
    var ses=session.getSession(chatId);
@@ -144,11 +107,11 @@ bot.onText(/^\/movie(.+)/, function (msg,match) {
    bot.sendMessage(chatId,info);
 });
 
-bot.on('text',function(msg){
+/*bot.on('text',function(msg){
 
-});
+});*/
 
-bot.onText(/^\/help/, function (msg) {
+bot.onText(regExp.help, function (msg) {
   var chatId = msg.chat.id;
   var ses=session.getSession(chatId);
   var lang=language.getLanguageCode(ses.lang);
@@ -161,7 +124,61 @@ bot.onText(/^\/help/, function (msg) {
 });
 
 
-function getMovies(obj){
+bot.on('callback_query',function (callbackQuery) {
+  var chatId = callbackQuery.message.chat.id;
+  var ses=session.getSession(chatId);
+  var callbackData=callbackQuery.data.split('_');
+  var options = {
+        chat_id: callbackQuery.message.chat.id,
+        message_id: callbackQuery.message.message_id
+      };
+  var message;
+  var langCode=language.getLanguageCode(ses.lang);
+  switch(callbackData[0])
+  {
+    case callback_ids.language: //"language":
+      ses.lang=Number(callbackData[1]);
+      langCode=language.getLanguageCode(ses.lang);
+      message= translate.get(langCode ,'currentLanguage') + language.getLanguageDescription(ses.lang);
+      bot.editMessageText(message, options);
+    break;
+    case callback_ids.movies: //"movies":
+      switch(callbackData[1])
+      {
+        case callback_ids.previous://"previous":
+          if(ses.releasesPage>1) ses.releasesPage-=1;
+        break;
+        case callback_ids.next: //"next":
+          ses.releasesPage+=1;
+        break;
+      }
+      var resul= api.getReleases(language.getLanguageCode(ses.lang),ses.releasesPage);
+      var pag=getPagination(resul,langCode,callback_ids.movies);
+      bot.sendMessage(chatId,getMovies(resul) + pag.message,pag.opts);
+    break;
+    case callback_ids.search: //"search":
+      switch(callbackData[2])
+      {
+        case callback_ids.previous: //"previous":
+          if(ses.searchPage>1) ses.searchPage-=1;
+        break;
+        case callback_ids.next://"next":
+          ses.searchPage+=1;
+        break;
+      }
+      var query=callbackData[1];
+      var resul= api.getMovieSearch(language.getLanguageCode(ses.lang),query,ses.searchPage);
+      var pag=getPagination(resul,langCode,callback_ids.search + "_" + query);
+      bot.sendMessage(chatId,getMovies(resul) + pag.message,pag.opts);
+    break;
+  }  
+});
+
+
+
+
+function getMovies(obj)
+{
   var movies="";//format(translate.get(lang,'pageOf'),page,obj.total_pages) + "\n";
   obj.results.forEach(function(item,index){
     movies +=item.title + " (" + item.vote_average + ") /movie" + item.id + "\n";
@@ -181,7 +198,7 @@ function getPagination(obj,lang,callback_code)
       options.push(
       {
         "text":translate.get(lang,'forPrevious'),
-        "callback_data": callback_code + "_previous"
+        "callback_data": callback_code + "_" + callback_ids.previous
       });
     }
     if(obj.page<obj.total_pages)
@@ -189,7 +206,7 @@ function getPagination(obj,lang,callback_code)
       options.push(
       {
         "text":translate.get(lang,'forNext'),
-        "callback_data": callback_code + "_next"
+        "callback_data": callback_code + "_" + callback_ids.next
       });
     }
     var markup= JSON.stringify({
