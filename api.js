@@ -1,6 +1,7 @@
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var apiKey="44a2cd8bedba52acd348d4456277bd51";
 var releasesUrl="https://api.themoviedb.org/3/movie/now_playing";
+var translate=require("./translate.js");
 
 exports.getReleases= function getReleases(lang,page)
 {
@@ -14,9 +15,9 @@ exports.getReleases= function getReleases(lang,page)
     resul +=item.title + " (" + item.vote_average + ")\n";
   });  
   if(page>1)
-    resul+="/previous para anteriores...\n\n";  
+    resul+="/previous " + translate.get(lang,'forPrevious') + "\n\n";  
   if(page<obj.total_pages)
-    resul+="/next para siguientes...";
+    resul+="/next " +  translate.get(lang,'forNext');
   return resul;
 }
 

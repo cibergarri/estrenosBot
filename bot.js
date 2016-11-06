@@ -50,7 +50,7 @@ bot.onText(/^\/start/, function (msg) {
   var chatId = msg.chat.id;
   var ses=session.getSession(chatId);
   ses.releasesPage=1;
-  var resul= api.getReleases(ses.lang,ses.releasesPage);
+  var resul= api.getReleases(language.getLanguageCode(ses.lang),ses.releasesPage);
   bot.sendMessage(chatId,resul);
 }); 
 
@@ -58,7 +58,7 @@ bot.onText(/^\/next/,function(msg){
   var chatId = msg.chat.id;
   var ses=session.getSession(chatId);
   ses.releasesPage+=1;
-  var resul= api.getReleases(ses.lang,ses.releasesPage);
+  var resul= api.getReleases(language.getLanguageCode(ses.lang),ses.releasesPage);
   bot.sendMessage(chatId,resul);
 });
 
@@ -67,7 +67,7 @@ bot.onText(/^\/previous/,function(msg){
   var ses=session.getSession(chatId);
   if(ses.releasesPage>1)
     ses.releasesPage-=1;
-  var resul= api.getReleases(ses.lang,ses.releasesPage);
+  var resul= api.getReleases(language.getLanguageCode(ses.lang),ses.releasesPage);
   bot.sendMessage(chatId,resul);
 });
 
