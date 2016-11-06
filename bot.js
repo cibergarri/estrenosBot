@@ -76,8 +76,9 @@ bot.on('callback_query',function (callbackQuery) {
           ses.searchPage+=1;
         break;
       }
-      var resul= api.getMovieSearch(language.getLanguageCode(ses.lang),callbackData[1],ses.searchPage);
-      var pag=getPagination(resul,langCode,"search");
+      var query=callbackData[1];
+      var resul= api.getMovieSearch(language.getLanguageCode(ses.lang),query,ses.searchPage);
+      var pag=getPagination(resul,langCode,"search_" + query);
       bot.sendMessage(chatId,getMovies(resul) + pag.message,pag.opts);
     break;
   }  
@@ -108,7 +109,7 @@ bot.onText(/^\/title (.+)/, function (msg,match) {
    var ses=session.getSession(chatId);
    ses.searchPage=1;
    var langCode=language.getLanguageCode(ses.lang);
-   var resul= api.getMovieSearch(langCode,query);
+   var resul= api.getMovieSearch(langCode,query,ses.searchPage);
    var response="";
    resul.results.forEach(function(item,index){
      response+=item.title + " /movie" + item.id + "\n";
