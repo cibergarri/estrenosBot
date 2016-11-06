@@ -148,6 +148,18 @@ bot.on('text',function(msg){
 
 });
 
+bot.onText(/^\/help/, function (msg) {
+  var chatId = msg.chat.id;
+  var ses=session.getSession(chatId);
+  var lang=language.getLanguageCode(ses.lang);
+  var helpInfo="";
+  for(i=1;i<=5;i++)
+  {
+    helpInfo+=translate.get(lang,'helpInfo'+i) + "\n";
+  }
+  bot.sendMessage(chatId,helpInfo);
+});
+
 
 function getMovies(obj){
   var movies="";//format(translate.get(lang,'pageOf'),page,obj.total_pages) + "\n";

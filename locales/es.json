@@ -10,5 +10,10 @@
     "genres":"genero(s)",
     "overview":"Resumen",
     "companies":"Productora/s",
-    "releaseDate":"Fecha de estreno"
+    "releaseDate":"Fecha de estreno",
+    "helpInfo1":"'/start' para obtener los estrenos.",
+    "helpInfo2":"'/title + palabra(s)' para hacer una búsqueda de esa(s) palabra(s) en el título.",
+    "helpInfo3":"'/settings' para cambiar el lenguaje.",
+    "helpInfo4":"'/movies{id}' para obtener la información de una película.",
+    "helpInfo5":"'/help' Para esta ayuda."
 }
