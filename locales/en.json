@@ -15,5 +15,6 @@
     "helpInfo2":"'/title' + word(s)' To query in movie titles.",
     "helpInfo3":"'/settings' To set the language.",
     "helpInfo4":"'/movies{id}' To get the movie infomartion.",
-    "helpInfo5":"'/help' For this help."
+    "helpInfo5":"'/help' For this help.",
+    "similarMovies":"similar movies "
 }
