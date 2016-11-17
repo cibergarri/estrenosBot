@@ -12,7 +12,7 @@ var urls={
     "releases":"movie/now_playing",
     "movie":"movie/{0}",
     "config":"configuration",
-    "search":"search/movie/{0}",
+    "search":"search/movie",
     "similar":"movie/{0}/similar"
 };
 
@@ -63,7 +63,9 @@ exports.getMovieSearch= function(langCode,query,page)
     var xhr = new XMLHttpRequest();
     var url=getUrl(version3,urls.search,langCode,page);
     url+="&query=" + query;
+    console.log(url);
     var json_string=httpGet(url, false);  
+    console.log(json_string);
     var movieSearch = JSON.parse( json_string );
     return movieSearch;
 }
