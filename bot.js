@@ -6,8 +6,15 @@ var translate=require("./translate.js");
 var format = require('string-format')
 
 var botToken = '290157752:AAHg_tY6doG9LsvsULyyMzDkqVFxiN5VIPw';
+
 // Setup polling way
-var bot = new TelegramBot(botToken, {polling: true});
+if(process.env.NODE_ENV === 'production') {
+  bot = new Bot(token);
+  bot.setWebHook(process.env.HEROKU_URL + bot.token);
+}
+else {
+  bot = new Bot(token, { polling: true });
+}
 
 var regExp={
   "start":/^\/start/,
