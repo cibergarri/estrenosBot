@@ -5,7 +5,7 @@ var language=require("./language.js");
 var translate=require("./translate.js");
 var format = require('string-format')
 
-var botToken = '290157752:AAHg_tY6doG9LsvsULyyMzDkqVFxiN5VIPw';
+var botToken = process.env.TOKEN;
 
 // Setup polling way
 if(process.env.NODE_ENV === 'production') {
