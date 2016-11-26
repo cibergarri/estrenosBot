@@ -1,0 +1,29 @@
+{
+  "name": "estrenosBot",
+  "scripts": {
+  },
+  "env": {
+    "HEROKU_URL": {
+      "required": true
+    },
+    "NODE_ENV": {
+      "required": true
+    },
+    "TELEGRAM_TOKEN": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
