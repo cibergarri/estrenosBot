@@ -63,9 +63,7 @@ exports.getMovieSearch= function(langCode,query,page)
     var xhr = new XMLHttpRequest();
     var url=getUrl(version3,urls.search,langCode,page);
     url+="&query=" + query;
-    console.log(url);
     var json_string=httpGet(url, false);  
-    console.log(json_string);
     var movieSearch = JSON.parse( json_string );
     return movieSearch;
 }

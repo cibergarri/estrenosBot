@@ -7,13 +7,15 @@ var format = require('string-format')
 
 var botToken = process.env.TOKEN;
 
+console.log(process.env.NODE_ENV);
+
 // Setup polling way
 if(process.env.NODE_ENV === 'production') {
-  bot = new Bot(token);
+  bot = new TelegramBot(botToken);
   bot.setWebHook(process.env.HEROKU_URL + bot.token);
 }
 else {
-  bot = new Bot(token, { polling: true });
+  bot = new TelegramBot(botToken, { polling: true });
 }
 
 var regExp={
@@ -263,5 +265,5 @@ function getPagination(obj,lang,callback_code)
 
 }
 
-
+module.exports = bot;
 console.log('bot server started...');
