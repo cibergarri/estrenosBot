@@ -1,8 +1,8 @@
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
+var projectID=process.env.KEEN_PROJECT_ID
 var writeApiKey=process.env.KEEN_WRITE_KEY;
-var url="https://api.keen.io/3.0/projects/583a20c68db53dfda8a796f7/events/";
-
+var url="https://api.keen.io/3.0/projects/"+ projectID + "/events/";
 
 exports.write= function(event,data)
 {
@@ -17,7 +17,6 @@ exports.write= function(event,data)
     } catch(err){
       console.log(err.message);
       return null;
-    } 
-    
+    }    
 }
 
