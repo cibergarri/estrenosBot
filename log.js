@@ -8,9 +8,9 @@ exports.write= function(event,data)
 {
     try
     {
-        url+=event+"?api_key="+writeApiKey;
+        var theUrl= url + event + "?api_key="+writeApiKey;
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "POST", url, false );
+        xmlHttp.open( "POST", theUrl, false );
         xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlHttp.send( JSON.stringify(data) );
         xmlHttp.responseText;
