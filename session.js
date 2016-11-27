@@ -1,11 +1,11 @@
-var log = require('./log.js');
+var stats = require('./stats.js');
 var sessionsInfo={};
 
 exports.getSession= function getSession(chatId)
 {   
     var index=chatId.toString();
     var user_object={id:index};
-    log.write("USERS",user_object)
+    stats.write("USERS",user_object)
     if(sessionsInfo[index]==undefined)
     {
         sessionsInfo[index]=
